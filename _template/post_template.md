@@ -1,2 +1,2 @@
-# {{title}}
-created at : {{date}} {{time}}
+# <% tp.file.title %>
+created : <% tp.date.now() %>
