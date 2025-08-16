@@ -158,10 +158,10 @@ yat:
 #   - about.md
 
 # Page default value
-# defaults:
-#   home:
-#     heading: "Your awesome heading"
-#     subheading: "Your awesome subheading"
+defaults:
+  home:
+    heading: "AI is not for boring people to do creative tasks, \nbut for creative people to do boring tasks \nso that more time can be used for better stuff like touching grass."
+    subheading: "- Some random guy form the internet -"
 #     banner: "Your image url"
 
 # Banner default settings
