@@ -160,8 +160,8 @@ yat:
 # Page default value
 defaults:
   home:
-    heading: "AI is not for boring people to do creative tasks, \nbut for creative people to do boring tasks \nso that more time can be used for better stuff like touching grass."
-    subheading: "- Some random guy form the internet -"
+    heading: "A random guy from the internet once said..."
+    subheading: "AI is not for boring people to do creative tasks, but for creative people to do boring tasks so that more time can be used for better stuff like touching grass."
 #     banner: "Your image url"
 
 # Banner default settings
