@@ -26,4 +26,4 @@ Jekyll(지킬)은 정적 웹사이트 생성기입니다.  Markdown과 같은 �
 - [jamstackthemes.dev](https://jamstackthemes.dev/ssg/jekyll/)
 - [jekyllthemes.io](https://jekyllthemes.io/) (유료 다수 포함)
 
-가장 흔하게 선택하는 
+가장 흔하게 선택하는 테마는 [Chirpy](https://github.com/cotes2020/jekyll-theme-chirpy) 입니다. 깔끔한 디자인과 
