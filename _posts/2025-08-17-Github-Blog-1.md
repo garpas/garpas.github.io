@@ -15,9 +15,15 @@ tags:
 ## 0. 준비
 ### Github ID 만들기 & Github Page 만들기
 앞으로 여러 포스트 동안 만들 블로그는 Github Action, Git을 사용합니다. 따라서 Github 아이디가 필요해요. 특별히 유료 버전 결제할 필요는 없습니다. Github page가 사전에 제대로 작동하는지 확인하고 싶은 사람들은 다음 링크 들어가서 따라해 보세요. 필수는 아니고 Github page가 작동한다!를 확인해볼 수 있어요. 
-https://zeddios.tistory.com/1222 
+[왕초보를 위한 Github 블로그 만들기](https://zeddios.tistory.com/1222 )
 매우 친절하게 이분 가이드를 쭉 따라하셔도 되고 제가 만든 방법을 따라하실 분들은 템플릿 골라서 복사하는 방법까지 따라하시고 돌아오시면 됩니다.
 
 ### Jekyll 테마 고르기
-Jekyll(지킬)은 정적 웹사이트 생성기입니다.  Markdown과 같은 텍스트 파일을 블로그, 웹사이트로 변환하여 제공해준답니다. 사실 크게 알아야 하는 사전 지식은 없어요. Jekyll의 철학 중 하나인 "It Jsut Works"를 따라 어떻게 웹사이트가 생기는지 자세하게 알지 않아도 됩니다. 하지만
+Jekyll(지킬)은 정적 웹사이트 생성기입니다.  Markdown과 같은 텍스트 파일을 블로그, 웹사이트로 변환하여 제공해준답니다. 사실 크게 알아야 하는 사전 지식은 없어요. Jekyll의 철학 중 하나인 "It Jsut Works"를 따라 어떻게 웹사이트가 생기는지 자세하게 알지 않아도 됩니다. 이미 만들어진 좋은 테마를 고르고 내용만 채우면 끝입니다.
+##### 대표적으로 테마를 고를 수 있는 링크
+- https://github.com/topics/jekyll-theme
+- [jekyllthemes.org](http://jekyllthemes.org/)
+- [jamstackthemes.dev](https://jamstackthemes.dev/ssg/jekyll/)
+- [jekyllthemes.io](https://jekyllthemes.io/) (유료 다수 포함)
 
+가장 흔하게 선택하는 
