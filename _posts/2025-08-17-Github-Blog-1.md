@@ -27,5 +27,5 @@ Jekyll(지킬)은 정적 웹사이트 생성기입니다.  Markdown과 같은 �
 - [jekyllthemes.io](https://jekyllthemes.io/) (유료 다수 포함)
 
 가장 흔하게 선택하는 테마는 [Chirpy](https://github.com/cotes2020/jekyll-theme-chirpy) 입니다. 깔끔한 디자인 때문에 많은 분들이 선택하셨고 인터넷에 예시도 많아서 따라하기도 편합니다. 
-
-전 당연히 
+![[jekyll_chirpy.png]]
+전 [Yet Another Theme](https://github.com/jeffreytse/jekyll-theme-yat)이라는 템플릿을 선택하였습니다. 다들 Chirpy 이용하길래 색다른 페이지를 만들고 싶다는 이유가 제일 컷습니다.
