@@ -15,9 +15,9 @@ tags:
 ## 0. 준비
 앞으로 여러 포스트 동안 만들 블로그 만들 때 사용할 것들을 나열하면
 - Github Action
-- Github Codespace
 - Git
-- Jekyll
+- Jekyll ()
+- (선택)Github Codespace
 - (선택) Obsidian
 입니다.
 몇 개는 
