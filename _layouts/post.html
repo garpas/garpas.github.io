@@ -23,6 +23,12 @@ sidebar:
     {%- include views/post-header.html -%}
     {%- endif -%}
 
+    {% if page.image %}
+      <meta property="og:image" content="path/to/post/image.jpg">
+    {% else %}
+      <meta property="og:image" content="path/to/page/image.jpg">
+    {% endif %}
+
     {%- include views/article.html -%}
 
     {%- assign result = hidden | where_exp: "item", "item == 'navigator'" -%}
