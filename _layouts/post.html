@@ -24,9 +24,9 @@ sidebar:
     {%- endif -%}
 
     {% if page.image %}
-      <meta property="og:image" content="path/to/post/image.jpg">
-    {% else %}
-      <meta property="og:image" content="path/to/page/image.jpg">
+      <div class="post-image">
+        <img src="{{ page.image | relative_url }}" alt="{{ page.title | escape }}">
+      </div>
     {% endif %}
 
     {%- include views/article.html -%}
