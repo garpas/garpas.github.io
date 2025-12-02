@@ -59,7 +59,7 @@ permalink: /writing-heatmap.html
   </div>
 
   <div class="whm-footnote">
-    기준: 오늘 기준 최근 1년(52주)을 표시합니다.
+    기준: 오늘 기준 최근 반년(26주)을 표시합니다.
   </div>
 </div>
 
@@ -326,7 +326,7 @@ permalink: /writing-heatmap.html
   if (bestStreakSpan) bestStreakSpan.textContent = String(bestStreak);
 
   /* ---------- 최근 52주 뷰 데이터 ---------- */
-  const VIEW_WEEKS = 52; // 항상 52주 표시
+  const VIEW_WEEKS = 26; // 항상 52주 표시
   const viewEndWeek = endWeek;
   const viewStartWeek = new Date(viewEndWeek.getTime() - (VIEW_WEEKS - 1) * WEEK_MS);
 
