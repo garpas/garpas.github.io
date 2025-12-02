@@ -3,11 +3,10 @@ layout: about
 title: Writing Heatmap
 permalink: /writing-heatmap.html
 ---
-
 <h2>Writing Heatmap</h2>
 <p>
   한 칸이 1주를 뜻하고, 색이 진할수록 그 주에 쓴 글이 많습니다.
-  목표는 <strong>한 주에 글 1편</strong>입니다.
+  목표는 <strong>한 주에 글 1개</strong>입니다.
 </p>
 
 <div class="whm-wrapper">
@@ -15,16 +14,26 @@ permalink: /writing-heatmap.html
     <div>
       <strong>주간 글쓰기 패턴</strong>
       <div class="whm-subtitle">
-        목표: 한 주에 글 1편<br>
-        지금까지 <span id="whm-total-weeks">-</span>주 중
+        이 구간 기준으로 <span id="whm-total-weeks">-</span>주 중
         <span id="whm-active-weeks">-</span>주에 글을 썼어요.
         (<span id="whm-success-rate">-</span>% 달성)
       </div>
       <div class="whm-range">
-        기간:
+        표시 구간:
         <span id="whm-range-start">-</span>
         ~
         <span id="whm-range-end">-</span>
+      </div>
+    </div>
+
+    <!-- 오른쪽: 연속 작성 스트릭 표시 -->
+    <div class="whm-streak-box">
+      <div class="whm-streak-label">현재 연속 작성</div>
+      <div class="whm-streak-value">
+        <span id="whm-current-streak">0</span>주
+      </div>
+      <div class="whm-streak-sub">
+        최고 기록 <span id="whm-best-streak">0</span>주
       </div>
     </div>
   </div>
@@ -32,25 +41,30 @@ permalink: /writing-heatmap.html
   <div class="whm-legend">
     <span>미작성</span>
     <span class="whm-legend-swatch whm-level-0"></span>
-    <span>1편(목표)</span>
+    <span>1개(목표)</span>
     <span class="whm-legend-swatch whm-level-1"></span>
-    <span>2편</span>
+    <span>2개</span>
     <span class="whm-legend-swatch whm-level-2"></span>
-    <span>3편</span>
+    <span>3개</span>
     <span class="whm-legend-swatch whm-level-3"></span>
-    <span>4편 이상</span>
+    <span>4개 이상</span>
     <span class="whm-legend-swatch whm-level-4"></span>
   </div>
 
-  <div id="whm-grid" class="whm-grid"></div>
+  <!-- 월 라벨 + 주간 박스 -->
+  <div class="whm-grid-wrapper">
+    <div id="whm-months" class="whm-month-row"></div>
+    <div id="whm-grid" class="whm-grid"></div>
+  </div>
 
   <div class="whm-footnote">
-    기준: 한 주에 글 1편 이상을 목표로 합니다.
+    기준: 최근 1년(52주) 기준으로 표시하며, 화면이 좁을 경우 최근 26주만 표시합니다.
   </div>
 </div>
 
 {%- comment -%}
-  모든 포스트 날짜를 JSON으로 넘겨서 자바스크립트에서 주 단위로 묶어 사용합니다.
+  모든 포스트 날짜를 JSON으로 넘겨서
+  자바스크립트에서 주 단위로 묶어 사용합니다.
 {%- endcomment -%}
 <script id="whm-posts-data" type="application/json">
 [
@@ -75,6 +89,7 @@ permalink: /writing-heatmap.html
     justify-content: space-between;
     align-items: flex-start;
     margin-bottom: 0.75rem;
+    gap: 1rem;
   }
 
   .whm-subtitle {
@@ -87,6 +102,28 @@ permalink: /writing-heatmap.html
     margin-top: 0.25rem;
     font-size: 0.8rem;
     opacity: 0.8;
+  }
+
+  /* 스트릭 박스 */
+  .whm-streak-box {
+    text-align: right;
+    min-width: 140px;
+  }
+
+  .whm-streak-label {
+    font-size: 0.8rem;
+    opacity: 0.7;
+  }
+
+  .whm-streak-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .whm-streak-sub {
+    font-size: 0.8rem;
+    opacity: 0.75;
   }
 
   .whm-legend {
@@ -105,10 +142,32 @@ permalink: /writing-heatmap.html
     border: 1px solid #cccccc;
   }
 
+  .whm-grid-wrapper {
+    margin-top: 0.5rem;
+    overflow-x: auto;
+    padding-bottom: 0.25rem;
+  }
+
+  /* 월 라벨 줄 */
+  .whm-month-row {
+    display: grid;
+    grid-template-columns: repeat(var(--whm-cols, 52), 1fr);
+    column-gap: 3px;
+    font-size: 0.7rem;
+    margin-bottom: 4px;
+  }
+
+  .whm-month-label {
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  /* 주간 박스 그리드 */
   .whm-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 3px;
+    display: grid;
+    grid-template-columns: repeat(var(--whm-cols, 52), 1fr);
+    column-gap: 3px;
+    row-gap: 3px;
     align-items: center;
   }
 
@@ -126,6 +185,7 @@ permalink: /writing-heatmap.html
     transition: transform 0.08s ease-out;
   }
 
+  /* 색 레벨: 0(없음), 1(목표 1개), 2(2개), 3(3개), 4(4개 이상) */
   .whm-level-0 { background-color: #eeeeee; }
   .whm-level-1 { background-color: #c8e6c9; }
   .whm-level-2 { background-color: #a5d6a7; }
@@ -139,6 +199,13 @@ permalink: /writing-heatmap.html
   }
 
   @media (max-width: 600px) {
+    .whm-header {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .whm-streak-box {
+      text-align: left;
+    }
     .whm-cell {
       width: 12px;
       height: 12px;
@@ -159,11 +226,12 @@ permalink: /writing-heatmap.html
     return;
   }
 
+  const grid = document.getElementById('whm-grid');
+  const monthsRow = document.getElementById('whm-months');
+  if (!grid || !monthsRow) return;
+
   if (!posts.length) {
-    const grid = document.getElementById('whm-grid');
-    if (grid) {
-      grid.textContent = '아직 포스트가 없어요.';
-    }
+    grid.textContent = '아직 포스트가 없어요.';
     return;
   }
 
@@ -172,13 +240,15 @@ permalink: /writing-heatmap.html
     p.dateObj = new Date(p.date + 'T00:00:00');
   });
 
-  // 가장 이른 날짜 구하기
+  // 가장 이른 날짜
   let minDate = posts[0].dateObj;
   posts.forEach(p => {
     if (p.dateObj < minDate) minDate = p.dateObj;
   });
 
   const today = new Date();
+  const DAY_MS = 24 * 60 * 60 * 1000;
+  const WEEK_MS = 7 * DAY_MS;
 
   function mondayOf(d) {
     const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
@@ -199,13 +269,12 @@ permalink: /writing-heatmap.html
   const startWeek = mondayOf(minDate);
   const endWeek = mondayOf(today);
 
-  const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
   const totalWeeks =
     Math.floor((endWeek.getTime() - startWeek.getTime()) / WEEK_MS) + 1;
 
   const weekCounts = new Array(totalWeeks).fill(0);
 
-  // 각 포스트를 해당 주 인덱스로 묶기
+  // 각 포스트를 해당 주 인덱스로 묶기 (전체 데이터용)
   posts.forEach(p => {
     const wStart = mondayOf(p.dateObj);
     const idx = Math.floor((wStart.getTime() - startWeek.getTime()) / WEEK_MS);
@@ -214,55 +283,120 @@ permalink: /writing-heatmap.html
     }
   });
 
-  // 색 레벨: 0(없음), 1(목표 1편), 2(2편), 3(3편), 4(4편 이상)
-  function levelFor(count) {
-    if (count === 0) return 0;
-    if (count === 1) return 1;
-    if (count === 2) return 2;
-    if (count === 3) return 3;
-    return 4;
+  // 스트릭 계산 (전체 기준)
+  let bestStreak = 0;
+  let run = 0;
+  for (let i = 0; i < weekCounts.length; i++) {
+    if (weekCounts[i] > 0) {
+      run++;
+      if (run > bestStreak) bestStreak = run;
+    } else {
+      run = 0;
+    }
   }
 
-  const grid = document.getElementById('whm-grid');
-  grid.innerHTML = '';
+  let currentStreak = 0;
+  for (let i = weekCounts.length - 1; i >= 0; i--) {
+    if (weekCounts[i] > 0) {
+      currentStreak++;
+    } else {
+      break;
+    }
+  }
 
-  weekCounts.forEach((count, i) => {
-    const weekStart = new Date(startWeek.getTime() + i * WEEK_MS);
-    const weekEnd = new Date(weekStart.getTime() + 6 * 24 * 60 * 60 * 1000);
+  const currentStreakSpan = document.getElementById('whm-current-streak');
+  const bestStreakSpan = document.getElementById('whm-best-streak');
+  if (currentStreakSpan) currentStreakSpan.textContent = String(currentStreak);
+  if (bestStreakSpan) bestStreakSpan.textContent = String(bestStreak);
 
-    const cell = document.createElement('div');
-    cell.className = 'whm-cell';
+  // 화면 너비에 따라 52주 또는 26주만 표시
+  const DESKTOP_MAX_WEEKS = 52; // 1년
+  const MOBILE_MAX_WEEKS = 26;  // 반년
+  const isNarrow = window.innerWidth < 768;
+  const maxWeeks = isNarrow ? MOBILE_MAX_WEEKS : DESKTOP_MAX_WEEKS;
 
-    const level = levelFor(count);
-    cell.classList.add('whm-level-' + level);
+  const viewWeeks = Math.min(totalWeeks, maxWeeks);
+  const startIndex = Math.max(0, totalWeeks - viewWeeks);
 
-    cell.title = `${fmt(weekStart)} ~ ${fmt(weekEnd)}\n글 ${count}개`;
-
-    grid.appendChild(cell);
-  });
-
-  // 통계 텍스트 업데이트
+  // 이 구간 기준 주 수 / 작성 주 / 성공률
   const totalWeeksSpan = document.getElementById('whm-total-weeks');
   const activeWeeksSpan = document.getElementById('whm-active-weeks');
   const successRateSpan = document.getElementById('whm-success-rate');
   const rangeStartSpan = document.getElementById('whm-range-start');
   const rangeEndSpan = document.getElementById('whm-range-end');
 
-  const active = weekCounts.filter(c => c > 0).length;
+  const viewCounts = weekCounts.slice(startIndex);
+  const active = viewCounts.filter(c => c > 0).length;
 
-  if (totalWeeksSpan) totalWeeksSpan.textContent = String(totalWeeks);
+  if (totalWeeksSpan) totalWeeksSpan.textContent = String(viewWeeks);
   if (activeWeeksSpan) activeWeeksSpan.textContent = String(active);
-
   if (successRateSpan) {
-    const rate = totalWeeks > 0
-      ? Math.round((active / totalWeeks) * 100)
-      : 0;
+    const rate = viewWeeks > 0 ? Math.round((active / viewWeeks) * 100) : 0;
     successRateSpan.textContent = String(rate);
   }
 
+  const viewStartWeek = new Date(startWeek.getTime() + startIndex * WEEK_MS);
+  const viewEndWeekMonday = new Date(
+    viewStartWeek.getTime() + (viewWeeks - 1) * WEEK_MS
+  );
+  const viewEndWeek = new Date(viewEndWeekMonday.getTime() + 6 * DAY_MS);
+
   if (rangeStartSpan && rangeEndSpan) {
-    rangeStartSpan.textContent = fmt(startWeek);
-    rangeEndSpan.textContent = fmt(endWeek);
+    rangeStartSpan.textContent = fmt(viewStartWeek);
+    rangeEndSpan.textContent = fmt(viewEndWeek);
+  }
+
+  // 그리드 컬럼 수를 CSS 변수로 전달
+  grid.style.setProperty('--whm-cols', viewWeeks);
+  monthsRow.style.setProperty('--whm-cols', viewWeeks);
+
+  // 월 라벨 생성 (예: 25-Jan)
+  monthsRow.innerHTML = '';
+  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+  let lastMonth = -1;
+  for (let i = 0; i < viewWeeks; i++) {
+    const globalIndex = startIndex + i;
+    const weekStart = new Date(startWeek.getTime() + globalIndex * WEEK_MS);
+    const m = weekStart.getMonth();
+
+    const cell = document.createElement('div');
+    cell.className = 'whm-month-label';
+
+    if (m !== lastMonth) {
+      const yearShort = String(weekStart.getFullYear()).slice(-2);
+      cell.textContent = `${yearShort}-${monthNames[m]}`;
+      lastMonth = m;
+    } else {
+      cell.textContent = '';
+    }
+
+    monthsRow.appendChild(cell);
+  }
+
+  // 주간 박스 생성 (viewWeeks만 표시)
+  grid.innerHTML = '';
+  for (let i = 0; i < viewWeeks; i++) {
+    const globalIndex = startIndex + i;
+    const count = weekCounts[globalIndex];
+
+    const weekStart = new Date(startWeek.getTime() + globalIndex * WEEK_MS);
+    const weekEnd = new Date(weekStart.getTime() + 6 * DAY_MS);
+
+    const cell = document.createElement('div');
+    cell.className = 'whm-cell';
+
+    // 색 레벨: 0(없음), 1(1개), 2(2개), 3(3개), 4(4개 이상)
+    let level = 0;
+    if (count === 1) level = 1;
+    else if (count === 2) level = 2;
+    else if (count === 3) level = 3;
+    else if (count >= 4) level = 4;
+
+    cell.classList.add('whm-level-' + level);
+    cell.title = `${fmt(weekStart)} ~ ${fmt(weekEnd)}\n글 ${count}개`;
+
+    grid.appendChild(cell);
   }
 })();
 </script>
