@@ -6,3 +6,4 @@ Gemfile.lock
 .obsidian/
 .DS_Store
 Thumbs.db
+vendor/

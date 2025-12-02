@@ -8,7 +8,10 @@
 {%- include functions.html func='get_value' default='z' -%}
 {%- assign image_style = return | append: '-image-style' -%}
 
-{%- if paginator.posts.size > 0 -%}
+{%- comment -%} hidden: true인 포스트 제외 {%- endcomment -%}
+{%- assign visible_posts = paginator.posts | where_exp: "post", "post.hidden != true and post.hidden != 'true'" -%}
+
+{%- if visible_posts.size > 0 -%}
 <div class="pagination">
   <!-- Post list links -->
   <ul class="post-list {{ image_style }}">
@@ -17,6 +20,7 @@
       {%- assign post_item_class = "top-post" -%}
       {%- assign posts = site.posts
         | where_exp: "item", "item.top > 0"
+        | where_exp: "item", "item.hidden != true and item.hidden != 'true'"
         | sort: "top" -%}
       {%- for post in posts -%}
         {%- include views/pagination-item.html -%}
@@ -25,7 +29,7 @@
 
     <!-- Normal list item -->
     {%- assign post_item_class = "" -%}
-    {%- for post in paginator.posts -%}
+    {%- for post in visible_posts -%}
       {%- if post.top -%}
         {%- continue -%}
       {%- endif -%}
@@ -34,7 +38,8 @@
   </ul>
 
   <!-- Pagination links -->
-  {%- if paginator.posts.size < site.posts.size -%}
+  {%- assign all_visible_posts = site.posts | where_exp: "post", "post.hidden != true and post.hidden != 'true'" -%}
+  {%- if visible_posts.size < all_visible_posts.size -%}
     {%- include views/paginator.html -%}
   {%- endif -%}
 </div>
