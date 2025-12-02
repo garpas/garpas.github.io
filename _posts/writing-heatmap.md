@@ -51,14 +51,15 @@ permalink: /writing-heatmap.html
     <span class="whm-legend-swatch whm-level-4"></span>
   </div>
 
-  <!-- 월 라벨 + 주간 박스 -->
+  <!-- 연도 행 + 월 행 + 주간 박스 -->
   <div class="whm-grid-wrapper">
+    <div id="whm-years" class="whm-year-row"></div>
     <div id="whm-months" class="whm-month-row"></div>
     <div id="whm-grid" class="whm-grid"></div>
   </div>
 
   <div class="whm-footnote">
-    기준: 최근 1년(52주) 기준으로 표시하며, 화면이 좁을 경우 최근 26주만 표시합니다.
+    기준: 오늘 기준 최근 1년(52주)을 표시합니다.
   </div>
 </div>
 
@@ -148,7 +149,22 @@ permalink: /writing-heatmap.html
     padding-bottom: 0.25rem;
   }
 
-  /* 월 라벨 줄 */
+  /* 연도 행 */
+  .whm-year-row {
+    display: grid;
+    grid-template-columns: repeat(var(--whm-cols, 52), 1fr);
+    column-gap: 3px;
+    font-size: 0.75rem;
+    margin-bottom: 2px;
+    font-weight: 600;
+  }
+
+  .whm-year-label {
+    text-align: left;
+    white-space: nowrap;
+  }
+
+  /* 월 라벨 행 */
   .whm-month-row {
     display: grid;
     grid-template-columns: repeat(var(--whm-cols, 52), 1fr);
@@ -228,7 +244,8 @@ permalink: /writing-heatmap.html
 
   const grid = document.getElementById('whm-grid');
   const monthsRow = document.getElementById('whm-months');
-  if (!grid || !monthsRow) return;
+  const yearsRow = document.getElementById('whm-years');
+  if (!grid || !monthsRow || !yearsRow) return;
 
   if (!posts.length) {
     grid.textContent = '아직 포스트가 없어요.';
@@ -240,7 +257,7 @@ permalink: /writing-heatmap.html
     p.dateObj = new Date(p.date + 'T00:00:00');
   });
 
-  // 가장 이른 날짜
+  // 가장 이른 날짜 (전체 스트릭 계산용)
   let minDate = posts[0].dateObj;
   posts.forEach(p => {
     if (p.dateObj < minDate) minDate = p.dateObj;
@@ -266,28 +283,27 @@ permalink: /writing-heatmap.html
     return `${y}-${m}-${day}`;
   }
 
-  const startWeek = mondayOf(minDate);
   const endWeek = mondayOf(today);
 
-  const totalWeeks =
-    Math.floor((endWeek.getTime() - startWeek.getTime()) / WEEK_MS) + 1;
+  /* ---------- 전체 기간 기준 스트릭 계산 ---------- */
+  const globalStartWeek = mondayOf(minDate);
+  const globalTotalWeeks =
+    Math.floor((endWeek.getTime() - globalStartWeek.getTime()) / WEEK_MS) + 1;
 
-  const weekCounts = new Array(totalWeeks).fill(0);
+  const globalWeekCounts = new Array(globalTotalWeeks).fill(0);
 
-  // 각 포스트를 해당 주 인덱스로 묶기 (전체 데이터용)
   posts.forEach(p => {
     const wStart = mondayOf(p.dateObj);
-    const idx = Math.floor((wStart.getTime() - startWeek.getTime()) / WEEK_MS);
-    if (idx >= 0 && idx < totalWeeks) {
-      weekCounts[idx] += 1;
+    const idx = Math.floor((wStart.getTime() - globalStartWeek.getTime()) / WEEK_MS);
+    if (idx >= 0 && idx < globalTotalWeeks) {
+      globalWeekCounts[idx] += 1;
     }
   });
 
-  // 스트릭 계산 (전체 기준)
   let bestStreak = 0;
   let run = 0;
-  for (let i = 0; i < weekCounts.length; i++) {
-    if (weekCounts[i] > 0) {
+  for (let i = 0; i < globalWeekCounts.length; i++) {
+    if (globalWeekCounts[i] > 0) {
       run++;
       if (run > bestStreak) bestStreak = run;
     } else {
@@ -296,8 +312,8 @@ permalink: /writing-heatmap.html
   }
 
   let currentStreak = 0;
-  for (let i = weekCounts.length - 1; i >= 0; i--) {
-    if (weekCounts[i] > 0) {
+  for (let i = globalWeekCounts.length - 1; i >= 0; i--) {
+    if (globalWeekCounts[i] > 0) {
       currentStreak++;
     } else {
       break;
@@ -309,78 +325,101 @@ permalink: /writing-heatmap.html
   if (currentStreakSpan) currentStreakSpan.textContent = String(currentStreak);
   if (bestStreakSpan) bestStreakSpan.textContent = String(bestStreak);
 
-  // 화면 너비에 따라 52주 또는 26주만 표시
-  const DESKTOP_MAX_WEEKS = 52; // 1년
-  const MOBILE_MAX_WEEKS = 26;  // 반년
-  const isNarrow = window.innerWidth < 768;
-  const maxWeeks = isNarrow ? MOBILE_MAX_WEEKS : DESKTOP_MAX_WEEKS;
+  /* ---------- 최근 52주 뷰 데이터 ---------- */
+  const VIEW_WEEKS = 52; // 항상 52주 표시
+  const viewEndWeek = endWeek;
+  const viewStartWeek = new Date(viewEndWeek.getTime() - (VIEW_WEEKS - 1) * WEEK_MS);
 
-  const viewWeeks = Math.min(totalWeeks, maxWeeks);
-  const startIndex = Math.max(0, totalWeeks - viewWeeks);
+  const viewWeekCounts = new Array(VIEW_WEEKS).fill(0);
 
-  // 이 구간 기준 주 수 / 작성 주 / 성공률
+  posts.forEach(p => {
+    const wStart = mondayOf(p.dateObj);
+    const diff = wStart.getTime() - viewStartWeek.getTime();
+    const idx = Math.floor(diff / WEEK_MS);
+    if (idx >= 0 && idx < VIEW_WEEKS) {
+      viewWeekCounts[idx] += 1;
+    }
+  });
+
+  // 통계 텍스트 (52주 기준)
   const totalWeeksSpan = document.getElementById('whm-total-weeks');
   const activeWeeksSpan = document.getElementById('whm-active-weeks');
   const successRateSpan = document.getElementById('whm-success-rate');
   const rangeStartSpan = document.getElementById('whm-range-start');
   const rangeEndSpan = document.getElementById('whm-range-end');
 
-  const viewCounts = weekCounts.slice(startIndex);
-  const active = viewCounts.filter(c => c > 0).length;
+  const active = viewWeekCounts.filter(c => c > 0).length;
 
-  if (totalWeeksSpan) totalWeeksSpan.textContent = String(viewWeeks);
+  if (totalWeeksSpan) totalWeeksSpan.textContent = String(VIEW_WEEKS);
   if (activeWeeksSpan) activeWeeksSpan.textContent = String(active);
   if (successRateSpan) {
-    const rate = viewWeeks > 0 ? Math.round((active / viewWeeks) * 100) : 0;
+    const rate = VIEW_WEEKS > 0 ? Math.round((active / VIEW_WEEKS) * 100) : 0;
     successRateSpan.textContent = String(rate);
   }
 
-  const viewStartWeek = new Date(startWeek.getTime() + startIndex * WEEK_MS);
-  const viewEndWeekMonday = new Date(
-    viewStartWeek.getTime() + (viewWeeks - 1) * WEEK_MS
-  );
-  const viewEndWeek = new Date(viewEndWeekMonday.getTime() + 6 * DAY_MS);
+  const viewStartDate = viewStartWeek;
+  const viewEndDate = new Date(viewEndWeek.getTime() + 6 * DAY_MS); // 해당 주 마지막 날
 
   if (rangeStartSpan && rangeEndSpan) {
-    rangeStartSpan.textContent = fmt(viewStartWeek);
-    rangeEndSpan.textContent = fmt(viewEndWeek);
+    rangeStartSpan.textContent = fmt(viewStartDate);
+    rangeEndSpan.textContent = fmt(viewEndDate);
   }
 
-  // 그리드 컬럼 수를 CSS 변수로 전달
-  grid.style.setProperty('--whm-cols', viewWeeks);
-  monthsRow.style.setProperty('--whm-cols', viewWeeks);
+  // 그리드 컬럼 수 CSS 변수로 전달
+  grid.style.setProperty('--whm-cols', VIEW_WEEKS);
+  monthsRow.style.setProperty('--whm-cols', VIEW_WEEKS);
+  yearsRow.style.setProperty('--whm-cols', VIEW_WEEKS);
 
-  // 월 라벨 생성 (예: 25-Jan)
+  /* ---------- 연도 행 / 월 행 생성 ---------- */
+  yearsRow.innerHTML = '';
   monthsRow.innerHTML = '';
+
   const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 
   let lastMonth = -1;
-  for (let i = 0; i < viewWeeks; i++) {
-    const globalIndex = startIndex + i;
-    const weekStart = new Date(startWeek.getTime() + globalIndex * WEEK_MS);
+  let lastYearInView = null;
+
+  for (let i = 0; i < VIEW_WEEKS; i++) {
+    const weekStart = new Date(viewStartWeek.getTime() + i * WEEK_MS);
+    const y = weekStart.getFullYear();
     const m = weekStart.getMonth();
 
-    const cell = document.createElement('div');
-    cell.className = 'whm-month-label';
+    // 연도 라벨: 첫 칸에 한 번, 그리고 해가 바뀌는 시점의 1월 칸에만 표시
+    const yearCell = document.createElement('div');
+    yearCell.className = 'whm-year-label';
 
-    if (m !== lastMonth) {
-      const yearShort = String(weekStart.getFullYear()).slice(-2);
-      cell.textContent = `${yearShort}-${monthNames[m]}`;
-      lastMonth = m;
+    if (i === 0) {
+      yearCell.textContent = String(y);
+    } else if (m === 0 && y !== lastYearInView) {
+      yearCell.textContent = String(y);
     } else {
-      cell.textContent = '';
+      yearCell.textContent = '';
     }
 
-    monthsRow.appendChild(cell);
+    yearsRow.appendChild(yearCell);
+    lastYearInView = y;
+
+    // 월 라벨: 해당 달의 첫 주에만 표시
+    const monthCell = document.createElement('div');
+    monthCell.className = 'whm-month-label';
+
+    if (i === 0 || m !== lastMonth) {
+      monthCell.textContent = monthNames[m];
+    } else {
+      monthCell.textContent = '';
+    }
+
+    monthsRow.appendChild(monthCell);
+    lastMonth = m;
   }
 
-  // 주간 박스 생성 (viewWeeks만 표시)
+  /* ---------- 주간 박스 생성 ---------- */
   grid.innerHTML = '';
-  for (let i = 0; i < viewWeeks; i++) {
-    const globalIndex = startIndex + i;
-    const count = weekCounts[globalIndex];
 
-    const weekStart = new Date(startWeek.getTime() + globalIndex * WEEK_MS);
+  for (let i = 0; i < VIEW_WEEKS; i++) {
+    const count = viewWeekCounts[i];
+
+    const weekStart = new Date(viewStartWeek.getTime() + i * WEEK_MS);
     const weekEnd = new Date(weekStart.getTime() + 6 * DAY_MS);
 
     const cell = document.createElement('div');
