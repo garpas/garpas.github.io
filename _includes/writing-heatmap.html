@@ -67,11 +67,16 @@
 <style>
   .whm-wrapper {
     margin-top: 1.5rem;
+    margin-bottom: 3rem;
     padding: 1.5rem 1.25rem;
     border-radius: 8px;
     border: 1px solid #dddddd;
     background: rgba(0,0,0,0.02);
     font-size: 0.9rem;
+  }
+
+  .whm-header strong {
+    font-size: 1.2rem; /* 1.2rem, 1.3rem 등으로 더 키워도 됨 */
   }
 
   .whm-header {
@@ -314,7 +319,7 @@
   if (currentStreakSpan) currentStreakSpan.textContent = String(currentStreak);
   if (bestStreakSpan) bestStreakSpan.textContent = String(bestStreak);
 
-  /* ---------- 최근 52주 뷰 데이터 ---------- */
+  /* ---------- 최근 26주 뷰 데이터 ---------- */
   const VIEW_WEEKS = 26; // 항상 52주 표시
   const viewEndWeek = endWeek;
   const viewStartWeek = new Date(viewEndWeek.getTime() - (VIEW_WEEKS - 1) * WEEK_MS);
@@ -330,7 +335,7 @@
     }
   });
 
-  // 통계 텍스트 (52주 기준)
+  // 통계 텍스트 (26주 기준)
   const totalWeeksSpan = document.getElementById('whm-total-weeks');
   const activeWeeksSpan = document.getElementById('whm-active-weeks');
   const successRateSpan = document.getElementById('whm-success-rate');
@@ -363,7 +368,7 @@
   yearsRow.innerHTML = '';
   monthsRow.innerHTML = '';
 
-  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const monthNames = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
 
   let lastMonth = -1;
   let lastYearInView = null;
