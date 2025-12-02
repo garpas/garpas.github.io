@@ -57,12 +57,15 @@
   자바스크립트에서 주 단위로 묶어 사용합니다.
 {%- endcomment -%}
 
+{%- comment -%}
+  hidden: true / "true" 인 포스트는 히트맵에서 제외
+{%- endcomment -%}
 {%- assign visible_posts = site.posts
-     | where_exp: "post", "post.hidden != true and post.draft != true" -%}
+     | where_exp: "post", "post.hidden != true and post.hidden != 'true'" -%}
 
 <script id="whm-posts-data" type="application/json">
 [
-  {%- for post in site.posts -%}
+  {%- for post in visible_posts -%}
     {"date": "{{ post.date | date: '%Y-%m-%d' }}"}{% unless forloop.last %},{% endunless %}
   {%- endfor -%}
 ]
