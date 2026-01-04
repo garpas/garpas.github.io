@@ -3,3 +3,9 @@
 source "https://rubygems.org"
 gemspec
 
+# Ruby 3.4+ compatibility
+gem "bigdecimal"
+gem "logger"
+gem "ostruct"
+gem "fiddle"
+
