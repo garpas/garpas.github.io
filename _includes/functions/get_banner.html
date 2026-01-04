@@ -8,6 +8,13 @@
   {% assign name = 'banner.image' %}
   {%- include functions.html func='get_value' -%}
   {% assign banner_image = return | relative_url %}
+  
+  {%- include functions.html func='log' level='debug' msg='Get banner_dark_image value' -%}
+  {% assign name = 'banner.dark_image' %}
+  {%- include functions.html func='get_value' -%}
+  {%- if return -%}
+    {% assign banner_dark_image = return | relative_url %}
+  {%- endif -%}
 {%- else -%}
   {% assign banner_image = banner | relative_url %}
 {%- endif -%}

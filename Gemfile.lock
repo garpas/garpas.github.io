@@ -35,6 +35,7 @@ GEM
     ffi (1.17.2-x86_64-darwin)
     ffi (1.17.2-x86_64-linux-gnu)
     ffi (1.17.2-x86_64-linux-musl)
+    fiddle (1.1.6)
     forwardable-extended (2.6.0)
     gemoji (3.0.1)
     google-protobuf (3.25.8)
@@ -110,6 +111,7 @@ GEM
       racc (~> 1.4)
     nokogiri (1.18.9-x86_64-linux-musl)
       racc (~> 1.4)
+    ostruct (0.6.1)
     pathutil (0.16.2)
       forwardable-extended (~> 2.6)
     public_suffix (6.0.2)
@@ -184,8 +186,10 @@ PLATFORMS
 DEPENDENCIES
   bigdecimal
   bundler (>= 2.5, < 3.0)
+  fiddle
   jekyll-theme-yat!
   logger
+  ostruct
   rake (>= 13.0, < 14.0)
 
 BUNDLED WITH
