@@ -1,9 +1,5 @@
-*.gem
-.bundle
-.sass-cache
-_site
-Gemfile.lock
-.obsidian/
+node_modules/
+dist/
 .DS_Store
 Thumbs.db
-vendor/
+.obsidian/
